@@ -1,11 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-
-<Pane prefHeight="200" prefWidth="150" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nyonyo589.finalproject.vendorsViewController">
+<Pane prefWidth="841.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nyonyo589.finalproject.vendorsViewController">
    <children>
-      <Label layoutX="38.0" layoutY="83.0" text="Vendorsvview" />
+      <VBox layoutX="14.0" layoutY="14.0">
+         <children>
+            <Label text="Category" />
+            <ChoiceBox fx:id="categoryChoiceBox" prefWidth="150.0" />
+         </children>
+      </VBox>
+      <TableView layoutX="6.0" layoutY="91.0" prefHeight="486.0" prefWidth="827.0">
+        <columns>
+          <TableColumn prefWidth="75.0" text="C1" />
+          <TableColumn prefWidth="75.0" text="C2" />
+        </columns>
+      </TableView>
    </children>
+   <padding>
+      <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+   </padding>
 </Pane>
