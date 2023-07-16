@@ -11,12 +11,23 @@ import javafx.scene.image.ImageView;
 import  javafx.stage.Stage;
 import  javafx.event.ActionEvent;
 
+//import javax.swing.table.DefaultTableModel;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
+import java.util.Vector;
+
+class Userdata{
+    String firstname = null;
+    String lastname = null;
+    String username = null;
+    int id = 0;
+}
 
 public class LoginController implements Initializable {
     @FXML
@@ -54,16 +65,19 @@ public class LoginController implements Initializable {
             DatabaseConnection connectNow = new DatabaseConnection();
             Connection connectDB  = connectNow.getConnection();
 
-            String verifyLogin = "SELECT count(1) FROM user_account WHERE username =  '"
+            String verifyLogin = "SELECT * FROM user_account WHERE username =  '"
                     + usernameTextField.getText() + "'AND password = '"
                     + enterPasswordTextfield.getText() + "'";
-
             try{
                 Statement statement = connectDB.createStatement();
                 ResultSet queryResult = statement.executeQuery(verifyLogin);
-
-                while (queryResult.next()){
-                    if (queryResult.getInt(1) == 1){
+                ArrayList<Userdata> users = this.getData(queryResult);
+                int len = users.size();
+                System.out.println(len);
+                if(len==1){
+                    System.out.println(" kbis");
+                    //if (queryResult.getInt(1) == 1){
+                        System.out.println(" kbis");
                         loginMessageLabel.setText("Login successful!!!");
                         System.out.println("Login successful");
                         FXMLLoader loader = new FXMLLoader(getClass().getResource("welcome.fxml"));
@@ -75,9 +89,11 @@ public class LoginController implements Initializable {
                         scene = new Scene(root);
                         stage.setScene(scene);
                         stage.show();
-                    }else {
-                        loginMessageLabel.setText("Invalid login, try again.");
-                    }
+//                    }else {
+//                        loginMessageLabel.setText("Invalid login, try again.");
+//                    }
+                }else {
+                    loginMessageLabel.setText("Invalid login, try again.");
                 }
             }catch (Exception e){
                 e.printStackTrace();
@@ -100,6 +116,29 @@ public class LoginController implements Initializable {
         stage.close();
     }
 
+    private ArrayList<Userdata> getData(ResultSet rs) throws Exception{
+        ArrayList<Userdata> alldata = new ArrayList<>();
+        try {
+
+            Userdata user;
+            while(rs.next()){
+                System.out.println("No no 4");
+                //for(int i = 1; i<= c; i++){
+                    user = new Userdata();
+                    user.firstname = rs.getString("firstname");
+                    user.lastname = rs.getString("lastname");
+                    user.username = rs.getString("username");
+                    user.id = rs.getInt("account_id");
+                    alldata.add(user);
+                //}
+            }
+
+        }catch (Exception e){
+            System.out.println("No no no Error");
+
+        }
+        return alldata;
+    }
 
 
 

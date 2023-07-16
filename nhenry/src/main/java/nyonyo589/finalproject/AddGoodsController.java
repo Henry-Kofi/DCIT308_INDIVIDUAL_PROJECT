@@ -1,5 +1,6 @@
 package nyonyo589.finalproject;
 
+import com.mysql.jdbc.Driver;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -7,11 +8,15 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.paint.Color;
 
 import java.net.URL;
-import java.util.Date;
+import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 public class AddGoodsController implements Initializable {
@@ -44,59 +49,92 @@ public class AddGoodsController implements Initializable {
     @FXML
     private TableColumn<Goods,Integer> quantityTableColumn;
     @FXML
-    private TableColumn<Goods, String> dateTableColumn;
+    private TableColumn<Goods, Date> dateTableColumn;
+
+    int totalGoods = 0;
+    ObservableList<Goods> goodsObservableList = FXCollections.observableArrayList();
 
     String[] categoryChoices = {"","Beverages","Bread/Bakery","Canned/Jarred Goods","Dairy Products"
             ,"Dry/Baking Goods","Frozen Products","Meat","Farm Produce","Home Cleaners",
             "Paper Goods","Home Care"};
 
-//    ObservableList<Goods> goods = FXCollections.observableArrayList(
-////
-//            new Goods(0, "Bread", "Beverage",
-//                    10,6,6,"Sat Jul 08 23:15:11 GMT 2023")
-//    );
-
     public void addButtonOnAction(ActionEvent event){
-        getValues();
-    }
+        String category = categoryChoiceBox.getValue();
+        String name = goodnameTextField.getText();
+        int sprice = Integer.parseInt(sellingpriceTextField.getText());
+        int bprice = Integer.parseInt(buyingpriceTextField.getText());
+        int qty =Integer.parseInt(quantityTextField.getText());
+        Date date = new Date(System.currentTimeMillis());
+        System.out.println(category + name + sprice + bprice + qty);
+        Connection conn = null;
+        Statement statement = null;
+        try{
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
 
-    private void getValues() {
-        if (!categoryChoiceBox.getValue().isBlank() && !goodnameTextField.getText().isBlank() && !sellingpriceTextField.getText().isBlank()
-                && !buyingpriceTextField.getText().isBlank() && !quantityTextField.getText().isBlank()){
-            /*obtaining values from fields*/
-            String cname = categoryChoiceBox.getValue();
-            String gname = goodnameTextField.getText();
-            int sprice = Integer.parseInt(sellingpriceTextField.getText());
-            int bprice = Integer.parseInt(buyingpriceTextField.getText());
-            int qty = Integer.parseInt(quantityTextField.getText());
-            Date date = new Date();
-
-            try{
-
-
-                /*Clear values after saving*/
-                categoryChoiceBox.setValue("");
-                goodnameTextField.setText("");
-                sellingpriceTextField.setText(null);
-                buyingpriceTextField.setText(null);
-                quantityTextField.setText(null);
-                System.out.println("Category name:  " + cname +"\n" +
-                        "Good Name: " + gname + "\n" +
-                        "Selling Price: " + sprice + "\n" +
-                        "Buying Price:  " + bprice + "\n" +
-                        "Quantity:  " + qty + "\n" +
-                        "Date Added:    " + date);
             }catch (Exception e){
-//                e.printStackTrace();
+                e.printStackTrace();
                 e.getCause();
                 e.getMessage();
             }
+            conn =(Connection) DriverManager.getConnection("jdbc:mysql://127.0.0.1/demo_db","root","hunberry143");
+            System.out.println("Connected to database");
+            statement = (Statement) conn.createStatement();
+            String query1 = "insert products_table (product_name,product_category,selling_price,buying_price,quantity,date) values ("
+                    +"'" + goodnameTextField.getText() + "'" + ","+ "'"+ categoryChoiceBox.getValue().toString() + "'" + ","+Integer.parseInt(sellingpriceTextField.getText()) +","
+                    +Integer.parseInt(buyingpriceTextField.getText()) +","+Integer.parseInt(quantityTextField.getText())+ "," + "curtime())";
+            statement.executeUpdate(query1);
+            goodsObservableList.add(new Goods(totalGoods+1,name,category,sprice,bprice,qty, date));
+            idTableColumn.setCellValueFactory(new PropertyValueFactory<>("productid"));
+            goodnameTableColumn.setCellValueFactory(new PropertyValueFactory<>("productname"));
+            categoryTableColumn.setCellValueFactory(new PropertyValueFactory<>("categoryname"));
+            sellingpriceTableColumn.setCellValueFactory(new PropertyValueFactory<>("sellingprice"));
+            buyingpriceTableColumn.setCellValueFactory(new PropertyValueFactory<>("buyingprice"));
+            quantityTableColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
+            dateTableColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
 
-        } else if (categoryChoiceBox.getValue().isBlank() || goodnameTextField.getText().isBlank()
-        || sellingpriceTextField.getText().isBlank() || buyingpriceTextField.getText().isBlank() || quantityTextField.getText().isBlank()) {
-            messageLabel.setText("Please fill in all fields");
+            addgoodsTableView.setItems(goodsObservableList);
+            totalGoods++;
+            categoryChoiceBox.setValue("");
+            goodnameTextField.setText("");
+            sellingpriceTextField.setText(null);
+            buyingpriceTextField.setText(null);
+            quantityTextField.setText(null);
+        }catch (Exception e){
+            e.printStackTrace();
+            e.getCause();
+            e.getMessage();
         }
+        messageLabel.setText("Product Added Successfully");
+        messageLabel.setTextFill(Color.GREEN);
     }
+
+    public void retrieveButtonOnAction(ActionEvent event){
+        Connection conn = null;
+        Statement statement = null;
+        try{
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
+
+            }catch (Exception e){
+                e.printStackTrace();
+                e.getCause();
+                e.getMessage();
+            }
+            conn =(Connection) DriverManager.getConnection("jdbc:mysql://127.0.0.1/demo_db","root","hunberry143");
+            System.out.println("Connected to database");
+            statement = (Statement) conn.createStatement();
+            String query1 = "select * from products_table";
+            statement.executeUpdate(query1);
+
+        }catch (Exception e){
+            e.printStackTrace();
+            e.getCause();
+            e.getMessage();
+        }
+
+    }
+
 
     public void categoryChoiceBoxOnAction(ActionEvent event){
         String option = categoryChoiceBox.getSelectionModel().getSelectedItem();
@@ -105,33 +143,45 @@ public class AddGoodsController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
-//        ObservableList<String> list = FXCollections.observableList(List.of(options));
         categoryChoiceBox.getItems().addAll(categoryChoices);
+        DatabaseConnection connectNow = new DatabaseConnection();
+        Connection connectDB = connectNow.getConnection();
+        String productQuery = "select product_id,product_name,product_category,selling_price,buying_price,quantity,date from products_table";
+        try{
 
-//        idTableColumn.setCellValueFactory(new PropertyValueFactory<Goods,Integer>("idTableColumn"));
-//        goodnameTableColumn.setCellValueFactory(new PropertyValueFactory<Goods,String>("goodnameTableColumn"));
-//        categoryTableColumn.setCellValueFactory(new PropertyValueFactory<Goods,String>("categoryTableColumn"));
-//        sellingpriceTableColumn.setCellValueFactory(new PropertyValueFactory<Goods,Integer>("sellingpriceTableColumn"));
-//        buyingpriceTableColumn.setCellValueFactory(new PropertyValueFactory<Goods,Integer>("buyingpriceTableColumn"));
-//        quantityTableColumn.setCellValueFactory(new PropertyValueFactory<Goods,Integer>("quantityTableColumn"));
-//        dateTableColumn.setCellValueFactory(new PropertyValueFactory<Goods,String>("dateTableColumn"));
-//
-//        addgoodsTableView.setItems(goods);
+            Statement statement = connectDB.createStatement();
+            ResultSet queryOutput = statement.executeQuery(productQuery);
+
+            while (queryOutput.next()){
+                totalGoods++;
+                Integer queryProductID = queryOutput.getInt("product_id");
+                String queryProductName = queryOutput.getString("product_name");
+                String queryProductCategory = queryOutput.getString("product_category");
+                Integer queryProductSellingPrice = queryOutput.getInt("selling_price");
+                Integer queryProductBuyingPrice = queryOutput.getInt("buying_price");
+                Integer queryProductQuantity = queryOutput.getInt("quantity");
+                Date queryProductDate = queryOutput.getDate("date");
+                goodsObservableList.add(new Goods(queryProductID,queryProductName,queryProductCategory,queryProductSellingPrice,queryProductBuyingPrice,queryProductQuantity,queryProductDate));
+            }
+            idTableColumn.setCellValueFactory(new PropertyValueFactory<>("productid"));
+            goodnameTableColumn.setCellValueFactory(new PropertyValueFactory<>("productname"));
+            categoryTableColumn.setCellValueFactory(new PropertyValueFactory<>("categoryname"));
+            sellingpriceTableColumn.setCellValueFactory(new PropertyValueFactory<>("sellingprice"));
+            buyingpriceTableColumn.setCellValueFactory(new PropertyValueFactory<>("buyingprice"));
+            quantityTableColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
+            dateTableColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
+
+            addgoodsTableView.setItems(goodsObservableList);
+
+        }catch (SQLException e){
+            Logger.getLogger(Goods.class.getName()).log(Level.SEVERE,null,e);
+            e.printStackTrace();
+        }
     }
 
     @FXML
-    public  void initialize() throws Exception{
-        idTableColumn.setCellValueFactory(cellData -> cellData.getValue().idProperty().asObject());
-        goodnameTableColumn.setCellValueFactory(cellData -> cellData.getValue().goodNameProperty());
-        categoryTableColumn.setCellValueFactory(cellData -> cellData.getValue().categoryProperty());
-        sellingpriceTableColumn.setCellValueFactory(cellData -> cellData.getValue().sellingPriceProperty().asObject());
-        buyingpriceTableColumn.setCellValueFactory(cellData -> cellData.getValue().buyingPriceProperty().asObject());
-        quantityTableColumn.setCellValueFactory(cellData -> cellData.getValue().quantityProperty().asObject());
-        dateTableColumn.setCellValueFactory(cellData -> cellData.getValue().dateProperty());
+    private   void initialize() {
 
-        ObservableList<Goods> goodslist = GoodsDB.getAllRecords();
-        populateTable(goodslist);
     }
 
     private void populateTable(ObservableList<Goods> goodslist) {
@@ -139,4 +189,38 @@ public class AddGoodsController implements Initializable {
     }
 
 
+}
+class Goodsdata{
+    String productName = null;
+    String categoryName = null;
+    double sellingPrice = 0;
+    int quantity = 0;
+    double buyingPrice = 0;
+    Date date = null;
+    int id = 0;
+    private ArrayList<Goodsdata> getData(ResultSet rs) throws Exception{
+        ArrayList<Goodsdata> alldata = new ArrayList<>();
+        try {
+
+            Goodsdata goods;
+            while(rs.next()){
+                //for(int i = 1; i<= c; i++){
+                goods = new Goodsdata();
+                goods.buyingPrice = rs.getInt("buying_price");
+                goods.sellingPrice = rs.getInt("selling_price");
+                goods.categoryName = rs.getString("category_name");
+                goods.productName = rs.getString("product_name");
+                goods.quantity = rs.getInt("quantity");
+                goods.id = rs.getInt("product_id");
+                goods.date = rs.getDate("date");
+                alldata.add(goods);
+                //}
+            }
+
+        }catch (Exception e){
+            System.out.println("No no no Error");
+
+        }
+        return alldata;
+    }
 }
