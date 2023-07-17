@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<Pane prefWidth="841.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nyonyo589.finalproject.vendorsViewController">
+<Pane fx:id="vendorsViewpane" prefWidth="841.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nyonyo589.finalproject.vendorsViewController">
    <children>
       <VBox layoutX="14.0" layoutY="14.0">
          <children>
@@ -12,10 +12,14 @@
             <ChoiceBox fx:id="categoryChoiceBox" prefWidth="150.0" />
          </children>
       </VBox>
-      <TableView layoutX="6.0" layoutY="91.0" prefHeight="486.0" prefWidth="827.0">
+      <TableView fx:id="vendorsTableView" layoutX="6.0" layoutY="91.0" prefHeight="486.0" prefWidth="827.0">
         <columns>
-          <TableColumn prefWidth="75.0" text="C1" />
-          <TableColumn prefWidth="75.0" text="C2" />
+          <TableColumn fx:id="idTableColumn" prefWidth="40.0" text="ID" />
+          <TableColumn fx:id="vendorNameTableColumn" prefWidth="185.0" text="VENDOR NAME" />
+            <TableColumn fx:id="vendorsLocationTableColumn" minWidth="0.0" prefWidth="130.0" text="VENDOR LOCATION" />
+            <TableColumn fx:id="categoryProducedTableColumn" prefWidth="164.0" text="CATEGORY PRODUCED" />
+            <TableColumn fx:id="productNameTableColumn" prefWidth="183.0" text="PRODUCT NAME" />
+            <TableColumn fx:id="dateTableColumn" prefWidth="75.0" text="DATE" />
         </columns>
       </TableView>
    </children>

@@ -49,19 +49,11 @@ public class LoginController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle){
-//        File brandingFile = new File("images/signupbg.png");
-//        Image brandingImage = new Image(brandingFile.toURI().toString());
-//        brandingImageView.setImage(brandingImage);
-//
-//        File lockFile = new File("images/elitlogo.jpg");
-//        Image lockImage = new Image(lockFile.toURI().toString());
-//        lockImageView.setImage(lockImage);
     }
 
     public void loginButtonOnAction(ActionEvent event) throws IOException {
 
         if (usernameTextField.getText().isBlank() == false && enterPasswordTextfield.getText().isBlank() == false) {
-//            validateLogin();
             DatabaseConnection connectNow = new DatabaseConnection();
             Connection connectDB  = connectNow.getConnection();
 
@@ -73,11 +65,7 @@ public class LoginController implements Initializable {
                 ResultSet queryResult = statement.executeQuery(verifyLogin);
                 ArrayList<Userdata> users = this.getData(queryResult);
                 int len = users.size();
-                System.out.println(len);
                 if(len==1){
-                    System.out.println(" kbis");
-                    //if (queryResult.getInt(1) == 1){
-                        System.out.println(" kbis");
                         loginMessageLabel.setText("Login successful!!!");
                         System.out.println("Login successful");
                         FXMLLoader loader = new FXMLLoader(getClass().getResource("welcome.fxml"));
@@ -89,9 +77,6 @@ public class LoginController implements Initializable {
                         scene = new Scene(root);
                         stage.setScene(scene);
                         stage.show();
-//                    }else {
-//                        loginMessageLabel.setText("Invalid login, try again.");
-//                    }
                 }else {
                     loginMessageLabel.setText("Invalid login, try again.");
                 }
@@ -112,8 +97,11 @@ public class LoginController implements Initializable {
         }
     }
     public void cancelButtonOnAction(ActionEvent event){
+        Alert alert = new Alert(Alert.AlertType.WARNING,"Do you want to exit?",ButtonType.YES,ButtonType.NO);
+        ButtonType result = alert.showAndWait().orElse(ButtonType.NO);
+        if(ButtonType.YES.equals(result)){
         Stage stage = (Stage) cancelButton.getScene().getWindow();
-        stage.close();
+        stage.close();}
     }
 
     private ArrayList<Userdata> getData(ResultSet rs) throws Exception{
@@ -122,15 +110,13 @@ public class LoginController implements Initializable {
 
             Userdata user;
             while(rs.next()){
-                System.out.println("No no 4");
-                //for(int i = 1; i<= c; i++){
                     user = new Userdata();
                     user.firstname = rs.getString("firstname");
                     user.lastname = rs.getString("lastname");
                     user.username = rs.getString("username");
                     user.id = rs.getInt("account_id");
                     alldata.add(user);
-                //}
+
             }
 
         }catch (Exception e){

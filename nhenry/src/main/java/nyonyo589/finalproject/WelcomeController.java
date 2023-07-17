@@ -8,7 +8,9 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.SubScene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
@@ -53,8 +55,11 @@ public class WelcomeController implements Initializable {
         System.out.println("Sign-out successful");
     }
     public void  exitButtonOnAction(ActionEvent event){
+        Alert alert = new Alert(Alert.AlertType.WARNING,"Do you want to exit?", ButtonType.YES,ButtonType.NO);
+        ButtonType result = alert.showAndWait().orElse(ButtonType.NO);
+        if(ButtonType.YES.equals(result)){
         Stage stage = (Stage) exitButton.getScene().getWindow();
-        stage.close();
+        stage.close();}
     }
 
     @Override
