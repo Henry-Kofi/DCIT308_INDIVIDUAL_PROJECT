@@ -7,9 +7,9 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<Pane prefWidth="865.0" style="-fx-background-color: #bcb9c7;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nyonyo589.finalproject.AddGoodsController">
+<Pane prefWidth="865.0" style="-fx-background-color: transparent; -fx-border: solid;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nyonyo589.finalproject.AddGoodsController">
    <children>
-      <TableView fx:id="addgoodsTableView" layoutX="6.0" layoutY="252.0" prefHeight="325.0" prefWidth="854.0" style="-fx-background-color: #bcb9b7;" tableMenuButtonVisible="true">
+      <TableView fx:id="addgoodsTableView" layoutX="6.0" layoutY="252.0" prefHeight="325.0" prefWidth="854.0" style="-fx-background-color: #bcb9b7; -fx-border: solid; -fx-border-color: black;" tableMenuButtonVisible="true">
         <columns>
           <TableColumn fx:id="idTableColumn" maxWidth="50.0" minWidth="25.0" prefWidth="33.0" style="-fx-background-color: #bcb2eb; -fx-border: solid; -fx-border-width: 1px; -fx-border-color: black;" text="ID">
              <cellValueFactory>
@@ -71,7 +71,7 @@
                   <Font name="Comic Sans MS Italic" size="11.0" />
                </font>
             </Label>
-            <ChoiceBox fx:id="goodsNameChoiceBox" prefWidth="150.0" />
+            <ChoiceBox fx:id="goodsNameChoiceBox" prefWidth="150.0" style="-fx-background-color: transparent; -fx-border-color: solid; -fx-border-color: black; -fx-border-width: 0px 0px 1px 0px;" />
          </children>
       </VBox>
       <VBox layoutX="14.0" layoutY="111.0">

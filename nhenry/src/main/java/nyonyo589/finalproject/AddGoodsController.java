@@ -384,7 +384,6 @@ class Goodsdata{
 
             Goodsdata goods;
             while(rs.next()){
-                //for(int i = 1; i<= c; i++){
                 goods = new Goodsdata();
                 goods.buyingPrice = rs.getInt("buying_price");
                 goods.sellingPrice = rs.getInt("selling_price");
