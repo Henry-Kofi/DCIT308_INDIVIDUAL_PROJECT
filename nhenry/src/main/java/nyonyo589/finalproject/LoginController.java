@@ -120,7 +120,8 @@ public class LoginController implements Initializable {
             }
 
         }catch (Exception e){
-            System.out.println("No no no Error");
+            e.printStackTrace();
+            e.getCause();
 
         }
         return alldata;

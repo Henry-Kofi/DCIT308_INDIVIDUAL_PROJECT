@@ -72,7 +72,13 @@ public class AddGoodsController implements Initializable {
     String[] cannedChoices = {"vegetables", "spaghetti sauce", "ketchup"};
     String[] dairyChoices = {"cheeses", "eggs", "milk", "yoghurt","butter"};
     String[] bakingChoices = {"cereals", "flour", "sugar", "pasta", "mixes"};
-    String[] Meat = {"lunch meat", "poultry", "beef", "pork"};
+    String[] frozenChoices = {"waffles", "vegetables", "individual meals", "ice cream"};
+
+    String[] meatChoices = {"lunch meat", "poultry", "beef", "pork"};
+    String[] farmChoices ={"fruits", "vegetables"};
+    String[] cleanersChoices = {"all-purpose", "laundry detergent", "dishwashing","liquid/detergent"};
+    String[] paperChoices  = {"paper towels", "toilet paper", "aluminium foil", "sandwich bags"};
+    String[] homeChoices = {"shampoo", "soap", "hand soap", "shaving cream"};
     String[] categoryChoices = {"Beverages","Bread/Bakery","Canned/Jarred Goods","Dairy Products"
             ,"Dry/Baking Goods","Frozen Products","Meat","Farm Produce","Home Cleaners",
             "Paper Goods","Home Care"};
@@ -101,7 +107,7 @@ public class AddGoodsController implements Initializable {
             System.out.println("Connected to database");
             statement = (Statement) conn.createStatement();
             String query1 = "insert product_table (product_name,product_category,selling_price,buying_price,quantity,date) values ("
-                    +"'" + goodnameTextField.getText() + "'" + ","+ "'"+ categoryChoiceBox.getValue().toString() + "'" + ","+Double.parseDouble(sellingpriceTextField.getText()) +","
+                    +"'" + goodsNameChoiceBox.getValue().toString() + "'" + ","+ "'"+ categoryChoiceBox.getValue().toString() + "'" + ","+Double.parseDouble(sellingpriceTextField.getText()) +","
                     +Double.parseDouble(buyingpriceTextField.getText()) +","+Integer.parseInt(quantityTextField.getText())+ "," + "curtime())";
             statement.executeUpdate(query1);
             insertProductIntoTable(new Goodsdata(bprice,sprice,category,name,qty,totalGoods+1,date));
@@ -112,8 +118,13 @@ public class AddGoodsController implements Initializable {
             buyingpriceTextField.setText(null);
             quantityTextField.setText(null);
 
-            messageLabel.setText("Product Added Successfully");
+//            messageLabel.setText("Product Added Successfully");
             messageLabel.setTextFill(Color.GREEN);
+            Alert alert = new Alert(Alert.AlertType.INFORMATION,"Item added successfully",ButtonType.OK);
+            ButtonType result = alert.showAndWait().orElse(ButtonType.OK);
+            if (ButtonType.OK.equals(result)){
+                alert.close();
+            }
         }catch (Exception e){
             e.printStackTrace();
             e.getCause();
@@ -144,14 +155,48 @@ public class AddGoodsController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         categoryChoiceBox.getItems().addAll(categoryChoices);
+        categoryChoiceBox.setValue("Beverages");
+        goodsNameChoiceBox.setValue(beverageChoices[0]);
         goodsNameChoiceBox.getItems().addAll(beverageChoices);
         categoryChoiceBox.getSelectionModel().selectedItemProperty().addListener(
 
                 (ChangeListener)(ov,old,newval)->{
                     if (newval == "Bread/Bakery"){
+                        goodsNameChoiceBox.getItems().clear();
                         goodsNameChoiceBox.getItems().addAll(bakeryChoices);
                     } else if (newval == "Canned/Jarred Goods") {
+                        goodsNameChoiceBox.getItems().clear();
                         goodsNameChoiceBox.getItems().addAll(cannedChoices);
+                    } else if (newval == "Dairy Products") {
+                        goodsNameChoiceBox.getItems().clear();
+                        goodsNameChoiceBox.getItems().addAll(dairyChoices);
+                    } else if (newval == "Dry/Baking Goods") {
+                        goodsNameChoiceBox.getItems().clear();
+                        goodsNameChoiceBox.getItems().addAll(bakingChoices);
+                    } else if (newval == "Frozen Products") {
+                        goodsNameChoiceBox.getItems().clear();
+                        goodsNameChoiceBox.getItems().addAll(frozenChoices);
+                        
+                    } else if (newval == "Meat") {
+                        goodsNameChoiceBox.getItems().clear();
+                        goodsNameChoiceBox.getItems().addAll(meatChoices);
+                        
+                    } else if (newval == "Farm Produce") {
+                        goodsNameChoiceBox.getItems().clear();
+                        goodsNameChoiceBox.getItems().addAll(farmChoices);
+                        
+                    } else if (newval == "Home Cleaners") {
+                        goodsNameChoiceBox.getItems().clear();
+                        goodsNameChoiceBox.getItems().addAll(cleanersChoices);
+                        
+                    } else if (newval == "Paper Goods") {
+                        goodsNameChoiceBox.getItems().clear();
+                        goodsNameChoiceBox.getItems().addAll(paperChoices);
+                        
+                    } else if (newval == "Home Care") {
+                        goodsNameChoiceBox.getItems().clear();
+                        goodsNameChoiceBox.getItems().addAll(homeChoices);
+                        
                     }
                 }
         );
@@ -200,9 +245,7 @@ public class AddGoodsController implements Initializable {
                 try {
                     while(rs.next()){
                         totalGoods++;
-                        System.out.println("K K K 3");
                         goods = new Goodsdata();
-                        System.out.println("K K K 4");
                         goods.buyingPrice = rs.getDouble("buying_price");
                         goods.sellingPrice = rs.getDouble("selling_price");
                         goods.categoryName = rs.getString("category_name");
@@ -210,7 +253,6 @@ public class AddGoodsController implements Initializable {
                         goods.quantity = rs.getInt("quantity");
                         goods.id = rs.getInt("product_id");
                         goods.date = rs.getDate("date");
-                        System.out.println("K K K 2");
                         switch (categoryLowerCase){
                             // Stack stores
                             case  "beverages":
